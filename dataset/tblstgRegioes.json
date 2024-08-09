@@ -1,0 +1,52 @@
+{
+	"name": "tblstgRegioes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "srvbimktstars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DDD",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Cidade",
+				"type": "varchar"
+			},
+			{
+				"name": "Estado",
+				"type": "varchar"
+			},
+			{
+				"name": "DataInicio",
+				"type": "date"
+			},
+			{
+				"name": "DataFim",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Regioes"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

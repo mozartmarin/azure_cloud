@@ -1,0 +1,52 @@
+{
+	"name": "dfExtCursos",
+	"properties": {
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtCodCursosSaida",
+						"type": "DatasetReference"
+					},
+					"name": "CodProdutos"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsExtCursosDestino",
+						"type": "DatasetReference"
+					},
+					"name": "CursosDestino"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Cod as string,",
+				"          {Nome Novo} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CodProdutos",
+				"CodProdutos sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Cod as string,",
+				"          {Nome Novo} as string",
+				"     ),",
+				"     partitionFileNames:['cursos.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> CursosDestino"
+			]
+		}
+	}
+}

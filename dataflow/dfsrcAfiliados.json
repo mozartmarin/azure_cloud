@@ -1,0 +1,56 @@
+{
+	"name": "dfsrcAfiliados",
+	"properties": {
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtAfiliadosDestino",
+						"type": "DatasetReference"
+					},
+					"name": "DLSilver"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblsrcAfiliados",
+						"type": "DatasetReference"
+					},
+					"name": "srcDestino"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Afiliado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DLSilver",
+				"DLSilver sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Nome = Afiliado",
+				"     )) ~> srcDestino"
+			]
+		}
+	}
+}

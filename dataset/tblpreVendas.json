@@ -1,0 +1,71 @@
+{
+	"name": "tblpreVendas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "srvbimktstars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "4 - Fact"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdProdutor",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdCurso",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdAfiliado",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdTipoPagamento",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdStatus",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IdRegioes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ValorProduto",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "Data de Venda",
+				"type": "date"
+			},
+			{
+				"name": "QtdParcelas",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "pre",
+			"table": "fVendas"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

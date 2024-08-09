@@ -1,0 +1,96 @@
+{
+	"name": "dsExtVendasHotmartSaida",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dlMarketStars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "vendasHotmartsaida.csv",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Produto",
+				"type": "String"
+			},
+			{
+				"name": "Afiliado",
+				"type": "String"
+			},
+			{
+				"name": "Nome do Produtor",
+				"type": "String"
+			},
+			{
+				"name": "Documento do Produtor",
+				"type": "String"
+			},
+			{
+				"name": "Meio de Pagamento",
+				"type": "String"
+			},
+			{
+				"name": "Preço do Produto",
+				"type": "String"
+			},
+			{
+				"name": "Preço da Oferta",
+				"type": "String"
+			},
+			{
+				"name": "Tipo de Pagamento",
+				"type": "String"
+			},
+			{
+				"name": "Tipo pagamento oferta",
+				"type": "String"
+			},
+			{
+				"name": "Moeda",
+				"type": "String"
+			},
+			{
+				"name": "Número da Parcela",
+				"type": "String"
+			},
+			{
+				"name": "Recorrência",
+				"type": "String"
+			},
+			{
+				"name": "Data de Venda",
+				"type": "String"
+			},
+			{
+				"name": "Data de Confirmação",
+				"type": "String"
+			},
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "DDD",
+				"type": "String"
+			},
+			{
+				"name": "Cidade",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

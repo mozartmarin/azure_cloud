@@ -1,0 +1,37 @@
+{
+	"name": "pplpreStatus",
+	"properties": {
+		"activities": [
+			{
+				"name": "dfpreStatus",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dfpreStatus",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "3 - Presentation"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-08T20:53:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

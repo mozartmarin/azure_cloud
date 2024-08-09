@@ -1,0 +1,32 @@
+{
+	"name": "dsExtCodCursosSaida",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dlMarketStars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Cod-Produtos.csv",
+				"fileSystem": "bronze"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Cod;Nome Novo",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

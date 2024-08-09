@@ -1,0 +1,56 @@
+{
+	"name": "dfsrcStatus",
+	"properties": {
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtStatusDestino",
+						"type": "DatasetReference"
+					},
+					"name": "DLSilver"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblsrcStatus",
+						"type": "DatasetReference"
+					},
+					"name": "srcDestino"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DLSilver",
+				"DLSilver sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Nome = Status",
+				"     )) ~> srcDestino"
+			]
+		}
+	}
+}

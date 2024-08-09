@@ -1,0 +1,144 @@
+{
+	"name": "pplCargaCompleta",
+	"properties": {
+		"activities": [
+			{
+				"name": "pplExtraction",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplExtraction",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplSrcstage",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplExtraction",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplSrcstage",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplSrcVendasGold",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplSrcstage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplSrcVendasGold",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplStgStage",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplSrcVendasGold",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplStgStage",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplPrePresentation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplStgStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplPrePresentation",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplpreFatoVendas",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplPrePresentation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplpreFatoVendas",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Orchestrator/MAIN ROUTER - PIPELINE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-09T01:34:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

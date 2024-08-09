@@ -1,0 +1,294 @@
+{
+	"name": "dfsrcVendas",
+	"properties": {
+		"folder": {
+			"name": "4 - Fact"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtVendasHotmartSaida",
+						"type": "DatasetReference"
+					},
+					"name": "Silver"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcAfiliados",
+						"type": "DatasetReference"
+					},
+					"name": "srcAfiliados"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcCursos",
+						"type": "DatasetReference"
+					},
+					"name": "srcCursos"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcProdutor",
+						"type": "DatasetReference"
+					},
+					"name": "srcProdutor"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "srcRegioes"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcStatus",
+						"type": "DatasetReference"
+					},
+					"name": "srcStatus"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblsrcTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "srcTipodePagamento"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsfatVendas",
+						"type": "DatasetReference"
+					},
+					"name": "GoldVendas"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectAfiliados"
+				},
+				{
+					"name": "selectVendas"
+				},
+				{
+					"name": "joinAfiliados"
+				},
+				{
+					"name": "selectCursos"
+				},
+				{
+					"name": "joinCursos"
+				},
+				{
+					"name": "selectProdutor"
+				},
+				{
+					"name": "joinProdutor"
+				},
+				{
+					"name": "selectRegioes"
+				},
+				{
+					"name": "joinRegioes"
+				},
+				{
+					"name": "selectStatus"
+				},
+				{
+					"name": "joinStatus"
+				},
+				{
+					"name": "selectTipodePagamento"
+				},
+				{
+					"name": "joinTipodePagamento"
+				},
+				{
+					"name": "selectFinal"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Produto as string,",
+				"          Afiliado as string,",
+				"          {Nome do Produtor} as string,",
+				"          {Documento do Produtor} as string,",
+				"          {Meio de Pagamento} as string,",
+				"          {Preço do Produto} as string,",
+				"          {Preço da Oferta} as string,",
+				"          {Tipo de Pagamento} as string,",
+				"          {Tipo pagamento oferta} as string,",
+				"          Moeda as string,",
+				"          {Número da Parcela} as string,",
+				"          {Recorrência} as string,",
+				"          {Data de Venda} as string,",
+				"          {Data de Confirmação} as string,",
+				"          Status as string,",
+				"          DDD as string,",
+				"          Cidade as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Silver",
+				"source(output(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcAfiliados",
+				"source(output(",
+				"          Id as integer,",
+				"          BK as string,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcCursos",
+				"source(output(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcProdutor",
+				"source(output(",
+				"          Id as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcRegioes",
+				"source(output(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcStatus",
+				"source(output(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcTipodePagamento",
+				"srcAfiliados select(mapColumn(",
+				"          Id_Afiliados = Id,",
+				"          Nome_Afiliados = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectAfiliados",
+				"Silver select(mapColumn(",
+				"          Vendas_Produto = Produto,",
+				"          {Vendas_Nome do Produtor} = {Nome do Produtor},",
+				"          Vendas_Afiliado = Afiliado,",
+				"          {Preço do Produto},",
+				"          {Vendas_Tipo de Pagamento} = {Tipo de Pagamento},",
+				"          {Tipo pagamento oferta},",
+				"          {Número da Parcela},",
+				"          {Data de Venda},",
+				"          Vendas_Status = Status,",
+				"          Vendas_DDD = DDD",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectVendas",
+				"selectVendas, selectAfiliados join(Vendas_Afiliado == Nome_Afiliados,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinAfiliados",
+				"srcCursos select(mapColumn(",
+				"          Id_Cursos = Id,",
+				"          Nome_Cursos = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectCursos",
+				"joinAfiliados, selectCursos join(Vendas_Produto == Nome_Cursos,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinCursos",
+				"srcProdutor select(mapColumn(",
+				"          Id_Produtor = Id,",
+				"          Nome_Produtor = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectProdutor",
+				"joinCursos, selectProdutor join({Vendas_Nome do Produtor} == Nome_Produtor,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinProdutor",
+				"srcRegioes select(mapColumn(",
+				"          Id_Regioes = Id,",
+				"          DDD_Regioes = DDD,",
+				"          Cidade_Regioes = Cidade,",
+				"          Estado_Regioes = Estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectRegioes",
+				"joinProdutor, selectRegioes join(Vendas_DDD == toString(DDD_Regioes),",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinRegioes",
+				"srcStatus select(mapColumn(",
+				"          Id_Status = Id,",
+				"          Nome_Status = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectStatus",
+				"joinRegioes, selectStatus join(Vendas_Status == Nome_Status,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinStatus",
+				"srcTipodePagamento select(mapColumn(",
+				"          Id_TipodePagamento = Id,",
+				"          Nome_TipodePagamento = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectTipodePagamento",
+				"joinStatus, selectTipodePagamento join({Vendas_Tipo de Pagamento} == Nome_TipodePagamento,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinTipodePagamento",
+				"joinTipodePagamento select(mapColumn(",
+				"          {Preço do Produto},",
+				"          {Número da Parcela},",
+				"          {Data de Venda},",
+				"          Id_Afiliados,",
+				"          Id_Cursos,",
+				"          Id_Produtor,",
+				"          Id_Regioes,",
+				"          Id_Status,",
+				"          Id_TipodePagamento",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectFinal",
+				"selectFinal sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['fvendas.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> GoldVendas"
+			]
+		}
+	}
+}

@@ -1,0 +1,198 @@
+{
+	"name": "dfstgTipodePagamento",
+	"properties": {
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "tblsrcTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "Stage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblstgTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "StageNew"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "StageUpdate"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgTipodePagamento",
+						"type": "DatasetReference"
+					},
+					"name": "StageInativar"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ClassSource"
+				},
+				{
+					"name": "newSource"
+				},
+				{
+					"name": "ClassStage"
+				},
+				{
+					"name": "newStage"
+				},
+				{
+					"name": "Ativos"
+				},
+				{
+					"name": "joinLeft"
+				},
+				{
+					"name": "DataIni"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Id as integer,",
+				"          Nome as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"source(output(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          Nome as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Stage",
+				"Source sort(asc(Id, true)) ~> ClassSource",
+				"ClassSource select(mapColumn(",
+				"          Id_SRC = Id,",
+				"          Nome_SRC = Nome",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> newSource",
+				"Ativos sort(asc(BK, true)) ~> ClassStage",
+				"ClassStage select(mapColumn(",
+				"          Id_STG = Id,",
+				"          BK_STG = BK,",
+				"          Nome_STG = Nome,",
+				"          DataInicio_STG = DataInicio,",
+				"          DataFim_STG = DataFim",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> newStage",
+				"Stage filter(isNull(DataFim)) ~> Ativos",
+				"newSource, newStage join(Id_SRC == BK_STG,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinLeft",
+				"joinLeft derive(dataStartEnd = toDate(currentTimestamp())) ~> DataIni",
+				"DataIni split(isNull(BK_STG),",
+				"     (Id_STG==BK_STG) && (Nome_SRC != Nome_STG),",
+				"     (Id_STG==BK_STG) && (Nome_SRC != Nome_STG),",
+				"     disjoint: true) ~> split1@(NovosRegistros, Update, Inativar)",
+				"split1@Inativar alterRow(updateIf((Id_STG==BK_STG)&&(Nome_SRC!=Nome_STG))) ~> alterRow1",
+				"split1@NovosRegistros sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          Nome as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          BK = Id_SRC,",
+				"          Nome = Nome_SRC,",
+				"          DataInicio = dataStartEnd",
+				"     )) ~> StageNew",
+				"split1@Update sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          Nome as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          BK = Id_SRC,",
+				"          Nome = Nome_SRC,",
+				"          DataInicio = dataStartEnd",
+				"     )) ~> StageUpdate",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          Nome as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['Id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Id = Id_STG,",
+				"          BK = BK_STG,",
+				"          Nome = Nome_STG,",
+				"          DataInicio = DataInicio_STG,",
+				"          DataFim = dataStartEnd",
+				"     )) ~> StageInativar"
+			]
+		}
+	}
+}

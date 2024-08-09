@@ -1,0 +1,37 @@
+{
+	"name": "pplExtCursos",
+	"properties": {
+		"activities": [
+			{
+				"name": "dfExtCursos",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dfExtCursos",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-06T23:42:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

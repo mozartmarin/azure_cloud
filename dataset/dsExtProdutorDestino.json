@@ -1,0 +1,32 @@
+{
+	"name": "dsExtProdutorDestino",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dlMarketStars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "produtor.csv",
+				"fileSystem": "silver"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Nome do Produtor",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

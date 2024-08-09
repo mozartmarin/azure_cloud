@@ -1,0 +1,34 @@
+{
+	"name": "tblsrcCursos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "srvbimktstars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BK",
+				"type": "varchar"
+			},
+			{
+				"name": "Nome",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "src",
+			"table": "Cursos"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

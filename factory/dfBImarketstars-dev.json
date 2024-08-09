@@ -1,0 +1,9 @@
+{
+	"name": "dfBImarketstars-dev",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "79252901-1802-4531-8906-be8898a357ea",
+		"tenantId": "1621c8b4-6b6d-4679-9090-4764bff7597f"
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"name": "tblpreProdutor",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "srvbimktstars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 - Presentation"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Nome",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "pre",
+			"table": "dProdutor"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

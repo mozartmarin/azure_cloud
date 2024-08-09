@@ -1,0 +1,144 @@
+{
+	"name": "pplSrcstage",
+	"properties": {
+		"activities": [
+			{
+				"name": "pplsrcAfiliados",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcAfiliados",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplsrcCursos",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplsrcAfiliados",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcCursos",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplsrcRegioes",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplsrcCursos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcRegioes",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplsrcProdutor",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplsrcRegioes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcProdutor",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplsrcStatus",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplsrcProdutor",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcStatus",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pplsrcTipodePagamento",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pplsrcStatus",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplsrcTipodePagamento",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Orchestrator/Pipeline Workflow"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-09T01:28:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

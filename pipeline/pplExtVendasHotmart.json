@@ -1,0 +1,37 @@
+{
+	"name": "pplExtVendasHotmart",
+	"properties": {
+		"activities": [
+			{
+				"name": "dfExtVendasHotmart",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dfExtVendasHotmart",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-07T00:14:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

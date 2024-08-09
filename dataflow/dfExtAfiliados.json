@@ -1,0 +1,84 @@
+{
+	"name": "dfExtAfiliados",
+	"properties": {
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtVendasHotmartSaida",
+						"type": "DatasetReference"
+					},
+					"name": "Vendas"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsExtAfiliadosDestino",
+						"type": "DatasetReference"
+					},
+					"name": "AfiliadosSilver",
+					"description": "Exportar dados para dsExtAfiliadosDestino"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelicionarColuna"
+				},
+				{
+					"name": "AgregAuxiliar"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Produto as string,",
+				"          Afiliado as string,",
+				"          {Nome do Produtor} as string,",
+				"          {Documento do Produtor} as string,",
+				"          {Meio de Pagamento} as string,",
+				"          {Preço do Produto} as string,",
+				"          {Preço da Oferta} as string,",
+				"          {Tipo de Pagamento} as string,",
+				"          {Tipo pagamento oferta} as string,",
+				"          Moeda as string,",
+				"          {Número da Parcela} as string,",
+				"          {Recorrência} as string,",
+				"          {Data de Venda} as string,",
+				"          {Data de Confirmação} as string,",
+				"          Status as string,",
+				"          DDD as string,",
+				"          Cidade as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Vendas",
+				"Vendas select(mapColumn(",
+				"          Afiliado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelicionarColuna",
+				"SelicionarColuna aggregate(groupBy(Afiliado),",
+				"     {Contagem } = count(Afiliado)) ~> AgregAuxiliar",
+				"AgregAuxiliar sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Afiliado as string",
+				"     ),",
+				"     partitionFileNames:['Afiliados.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Afiliado",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> AfiliadosSilver"
+			]
+		}
+	}
+}

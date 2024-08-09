@@ -1,0 +1,80 @@
+{
+	"name": "dfpreVendas",
+	"properties": {
+		"folder": {
+			"name": "4 - Fact"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsfatVendas",
+						"type": "DatasetReference"
+					},
+					"name": "GoldVendas"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblpreVendas",
+						"type": "DatasetReference"
+					},
+					"name": "Destino"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          {Preço do Produto} as decimal(10,0),",
+				"          {Número da Parcela} as integer,",
+				"          {Data de Venda} as date,",
+				"          Id_Afiliados as integer,",
+				"          Id_Cursos as integer,",
+				"          Id_Produtor as integer,",
+				"          Id_Regioes as integer,",
+				"          Id_Status as integer,",
+				"          Id_TipodePagamento as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> GoldVendas",
+				"GoldVendas sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          IdProdutor as integer,",
+				"          IdCurso as integer,",
+				"          IdAfiliado as integer,",
+				"          IdTipoPagamento as integer,",
+				"          IdStatus as integer,",
+				"          IdRegioes as integer,",
+				"          ValorProduto as decimal(19,4),",
+				"          {Data de Venda} as date,",
+				"          QtdParcelas as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          IdProdutor = Id_Produtor,",
+				"          IdCurso = Id_Cursos,",
+				"          IdAfiliado = Id_Afiliados,",
+				"          IdTipoPagamento = Id_TipodePagamento,",
+				"          IdStatus = Id_Status,",
+				"          IdRegioes = Id_Regioes,",
+				"          ValorProduto = {Preço do Produto},",
+				"          {Data de Venda},",
+				"          QtdParcelas = {Número da Parcela}",
+				"     )) ~> Destino"
+			]
+		}
+	}
+}

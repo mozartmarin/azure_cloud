@@ -1,0 +1,62 @@
+{
+	"name": "dfsrcRegioes",
+	"properties": {
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtMacroRegioesDestino",
+						"type": "DatasetReference"
+					},
+					"name": "DLSilver"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblsrcRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "srcDestino"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          ddd as integer,",
+				"          cidade as string,",
+				"          estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DLSilver",
+				"DLSilver sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          DDD = ddd,",
+				"          Cidade = cidade,",
+				"          Estado = estado",
+				"     )) ~> srcDestino"
+			]
+		}
+	}
+}

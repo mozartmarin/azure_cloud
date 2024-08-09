@@ -1,0 +1,77 @@
+{
+	"name": "dfExtMacroRegioes",
+	"properties": {
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtMacroRegioesSaida",
+						"type": "DatasetReference"
+					},
+					"name": "MacroRegioes"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsExtMacroRegioesDestino",
+						"type": "DatasetReference"
+					},
+					"name": "regioesSilver"
+				}
+			],
+			"transformations": [
+				{
+					"name": "dddcidadeestado"
+				},
+				{
+					"name": "Splitdddcidadeestado"
+				},
+				{
+					"name": "RegioesSeparadas"
+				},
+				{
+					"name": "selecaofinal"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Column_1 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> MacroRegioes",
+				"MacroRegioes derive(dddcidadeestado = substring(Column_1,4,400)) ~> dddcidadeestado",
+				"dddcidadeestado derive(Splitdddcidadeestado = split(dddcidadeestado, '–')) ~> Splitdddcidadeestado",
+				"Splitdddcidadeestado derive(ddd = trim(Splitdddcidadeestado[1]),",
+				"          cidade = left(trim(Splitdddcidadeestado[2]), length(trim(Splitdddcidadeestado[2]))-1),",
+				"          estado = trim(Splitdddcidadeestado[3])) ~> RegioesSeparadas",
+				"RegioesSeparadas select(mapColumn(",
+				"          ddd,",
+				"          cidade,",
+				"          estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selecaofinal",
+				"selecaofinal sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ddd as string,",
+				"          cidade as string,",
+				"          estado as string",
+				"     ),",
+				"     partitionFileNames:['regioes.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> regioesSilver"
+			]
+		}
+	}
+}

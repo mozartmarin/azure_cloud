@@ -1,0 +1,218 @@
+{
+	"name": "dfstgRegioes",
+	"properties": {
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "tblsrcRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "Stage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblstgRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "StageNew"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "StageUpdate"
+				},
+				{
+					"dataset": {
+						"referenceName": "tblstgRegioes",
+						"type": "DatasetReference"
+					},
+					"name": "StageInativar"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ClassSource"
+				},
+				{
+					"name": "newSource"
+				},
+				{
+					"name": "ClassStage"
+				},
+				{
+					"name": "newStage"
+				},
+				{
+					"name": "Ativos"
+				},
+				{
+					"name": "joinLeft"
+				},
+				{
+					"name": "DataIni"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Id as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"source(output(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Stage",
+				"Source sort(asc(Id, true)) ~> ClassSource",
+				"ClassSource select(mapColumn(",
+				"          Id_SRC = Id,",
+				"          DDD_SRC = DDD,",
+				"          Cidade_SRC = Cidade,",
+				"          Estado_SRC = Estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> newSource",
+				"Ativos sort(asc(BK, true)) ~> ClassStage",
+				"ClassStage select(mapColumn(",
+				"          Id_STG = Id,",
+				"          BK_STG = BK,",
+				"          DDD_STG = DDD,",
+				"          Cidade_STG = Cidade,",
+				"          Estado_STG = Estado,",
+				"          DataInicio_STG = DataInicio,",
+				"          DataFim_STG = DataFim",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> newStage",
+				"Stage filter(isNull(DataFim)) ~> Ativos",
+				"newSource, newStage join(Id_SRC == BK_STG,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinLeft",
+				"joinLeft derive(dataStartEnd = toDate(currentTimestamp())) ~> DataIni",
+				"DataIni split(isNull(BK_STG),",
+				"     (Id_STG==BK_STG) && (DDD_SRC != DDD_STG || Cidade_SRC != Cidade_STG || Estado_SRC != Estado_STG),",
+				"     (Id_STG==BK_STG) && (DDD_SRC != DDD_STG || Cidade_SRC != Cidade_STG || Estado_SRC != Estado_STG),",
+				"     disjoint: true) ~> split1@(NovosRegistros, Update, Inativar)",
+				"split1@Inativar alterRow(updateIf((Id_STG==BK_STG)&&(DDD_SRC!=DDD_STG||Cidade_SRC!=Cidade_STG||Estado_SRC!=Estado_STG))) ~> alterRow1",
+				"split1@NovosRegistros sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          BK = Id_SRC,",
+				"          DDD = DDD_SRC,",
+				"          Cidade = Cidade_SRC,",
+				"          Estado = Estado_SRC,",
+				"          DataInicio = dataStartEnd",
+				"     )) ~> StageNew",
+				"split1@Update sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          BK = Id_SRC,",
+				"          DDD = DDD_SRC,",
+				"          Cidade = Cidade_SRC,",
+				"          Estado = Estado_SRC,",
+				"          DataInicio = dataStartEnd",
+				"     )) ~> StageUpdate",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          DDD as integer,",
+				"          Cidade as string,",
+				"          Estado as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['Id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Id = Id_STG,",
+				"          BK = BK_STG,",
+				"          DDD = DDD_STG,",
+				"          Cidade = Cidade_STG,",
+				"          Estado = Estado_STG,",
+				"          DataInicio = DataInicio_STG,",
+				"          DataFim = dataStartEnd",
+				"     )) ~> StageInativar"
+			]
+		}
+	}
+}

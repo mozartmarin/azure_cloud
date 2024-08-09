@@ -1,0 +1,29 @@
+{
+	"name": "pplpreFatoVendas",
+	"properties": {
+		"activities": [
+			{
+				"name": "pplpreVendas",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pplpreVendas",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Orchestrator/Pipeline Workflow"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-09T01:28:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

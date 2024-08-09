@@ -1,0 +1,80 @@
+{
+	"name": "dfExtProdutor",
+	"properties": {
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dsExtVendasHotmartSaida",
+						"type": "DatasetReference"
+					},
+					"name": "Vendas"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dsExtProdutorDestino",
+						"type": "DatasetReference"
+					},
+					"name": "ProdutorSilver"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AgregAuxiliar"
+				},
+				{
+					"name": "SelecionarColuna"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Produto as string,",
+				"          Afiliado as string,",
+				"          {Nome do Produtor} as string,",
+				"          {Documento do Produtor} as string,",
+				"          {Meio de Pagamento} as string,",
+				"          {Preço do Produto} as string,",
+				"          {Preço da Oferta} as string,",
+				"          {Tipo de Pagamento} as string,",
+				"          {Tipo pagamento oferta} as string,",
+				"          Moeda as string,",
+				"          {Número da Parcela} as string,",
+				"          {Recorrência} as string,",
+				"          {Data de Venda} as string,",
+				"          {Data de Confirmação} as string,",
+				"          Status as string,",
+				"          DDD as string,",
+				"          Cidade as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Vendas",
+				"Vendas aggregate(groupBy({Nome do Produtor}),",
+				"     Contagem = count({Status})) ~> AgregAuxiliar",
+				"AgregAuxiliar select(mapColumn(",
+				"          {Nome do Produtor}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelecionarColuna",
+				"SelecionarColuna sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          {Nome do Produtor} as string",
+				"     ),",
+				"     partitionFileNames:['produtor.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ProdutorSilver"
+			]
+		}
+	}
+}

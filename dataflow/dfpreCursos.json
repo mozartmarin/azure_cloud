@@ -1,0 +1,71 @@
+{
+	"name": "dfpreCursos",
+	"properties": {
+		"folder": {
+			"name": "3 - Presentation"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "tblstgCursos",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tblpreCursos",
+						"type": "DatasetReference"
+					},
+					"name": "Destino"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Ativos"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Id as integer,",
+				"          BK as integer,",
+				"          CodProdOrigine as string,",
+				"          Nome as string,",
+				"          DataInicio as date,",
+				"          DataFim as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"Source filter(isNull(DataFim)) ~> Ativos",
+				"Ativos sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          SK as integer,",
+				"          BK as string,",
+				"          CodProdOrigine as string,",
+				"          Nome as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          BK,",
+				"          CodProdOrigine,",
+				"          Nome",
+				"     )) ~> Destino"
+			]
+		}
+	}
+}

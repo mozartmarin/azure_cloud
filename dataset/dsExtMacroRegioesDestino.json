@@ -1,0 +1,40 @@
+{
+	"name": "dsExtMacroRegioesDestino",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dlMarketStars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 - Extraction"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "regioes.csv",
+				"fileSystem": "silver"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ddd",
+				"type": "String"
+			},
+			{
+				"name": "cidade",
+				"type": "String"
+			},
+			{
+				"name": "estado",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

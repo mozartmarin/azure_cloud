@@ -1,0 +1,43 @@
+{
+	"name": "tblstgProdutor",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "srvbimktstars",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - Stage"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Nome",
+				"type": "varchar"
+			},
+			{
+				"name": "DataInicio",
+				"type": "date"
+			},
+			{
+				"name": "DataFim",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "Produtor"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
